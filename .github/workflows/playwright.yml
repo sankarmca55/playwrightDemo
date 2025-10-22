@@ -28,7 +28,22 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          pytest -v --tracing=retain-on-failure
+          mkdir -p reports
+          pytest -v --tracing=retain-on-failure --html=reports/report.html --self-contained-html
+
+      - name: Upload Playwright trace files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: reports/
 
       - name: Upload Playwright trace files (if any)
         if: always()  # ensures it uploads even on test failure
